@@ -8,16 +8,57 @@ var city = preload("res://City.gd")
 var product = preload("res://Product.gd")
 var city_product = preload("res://CityProduct.gd")
 
+var product_panel = preload("res://ProductPanel.tscn")
+
+var city_data = [
+	{
+		'name': 'Callao'
+	},
+	{
+		'name': 'Chimbote'
+	},
+	{
+		'name': 'Tumbes'
+	}
+]
+
+var product_data = [
+	{
+		'name':'Llamas',
+		'min_price': 3,
+		'max_price': 23
+	},
+	{
+		'name':'Chicha',
+		'min_price': 1,
+		'max_price': 7
+	},
+	{
+		'name':'Tuna',
+		'min_price': 2,
+		'max_price': 6
+	},
+	{
+		'name':'Aguaymanto',
+		'min_price': 5,
+		'max_price': 13
+	},
+]
 var cities = []
 var current_city_index = 0
 
 var products = []
 
+# Signals
+signal ARRIVE_AT_PORT
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	create_Products()
+	create_ProductPanels()
 	create_Cities()
 	create_CityProducts()
+	arrive_at_port()
 	UpdateUI()
 
 
@@ -29,44 +70,46 @@ func UpdateUI():
 	
 	
 func create_Cities():
-	var city1 = city.new()
-	city1.city_name = "Callao"
-	cities.append(city1)
+	for _city in city_data:
+		var temp_city = city.new()
+		temp_city.city_name = _city.name
+		cities.append(temp_city)
 	
-	var city2 = city.new()
-	city2.city_name = "Chimbote"
-	cities.append(city2)
 	
-	var city3 = city.new()
-	city3.city_name = "Tumbes"
-	cities.append(city3)
 
 func create_Products():
-	var product1 = product.new("llamas", 3, 23)
-	var product2 = product.new("chicha", 1,13)
+	for _product in product_data:
+		var temp_product = product.new(_product.name, _product.min_price, _product.max_price)
+		products.append(temp_product)
 	
-	products.append(product1)
-	products.append(product2)
-	
-
+func create_ProductPanels():
+	for _product in products:
+		var _product_panel = product_panel.instance()
+		_product.product_panel = _product_panel
+		_product_panel.init(_product)
+		_product_panel.UpdateUI(_product.product_name)		
+		$ProductListContainer.add_child(_product_panel)
+		
 func create_CityProducts():
 	for _city in cities:
 		for _product in products:
-			var _city_product = city_product.new(_city, _product)
+			var _city_product = city_product.new(self, _city, _product)
 			_city.city_products.append(_city_product)
+
+func arrive_at_port():
+	emit_signal("ARRIVE_AT_PORT", cities[current_city_index])
+	
 		
-func _on_ChimboteButton_pressed():
-	current_city_index = 1
-	UpdateUI()
+		
+func depart_from_city(_destination_index):
+	if current_city_index != _destination_index:
+		current_city_index = _destination_index
+		# check for pirates
+		arrive_at_port()
+		UpdateUI()
+	else:
+		print("this is the same city you are not travelling")
 
 
-func _on_TumbesButton_pressed():
-	current_city_index = 2
-	UpdateUI()
 
 
-func _on_CallaoButton_pressed():
-	current_city_index = 0
-	
-	
-	UpdateUI()

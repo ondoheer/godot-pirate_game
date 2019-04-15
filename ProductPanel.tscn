@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://ProductPanel.gd" type="Script" id=1]
+[ext_resource path="res://Price.gd" type="Script" id=2]
+
+[node name="ProductPanel" type="Panel"]
+margin_left = -4.0
+margin_right = 527.0
+margin_bottom = 44.0
+script = ExtResource( 1 )
+
+[node name="ProductName" type="Label" parent="."]
+margin_left = 17.0
+margin_right = 313.0
+margin_bottom = 43.0
+text = "[Product Name]"
+valign = 1
+
+[node name="Price" type="Label" parent="."]
+margin_left = 354.0
+margin_top = 2.0
+margin_right = 514.0
+margin_bottom = 44.0
+text = "[Price]"
+align = 2
+valign = 1
+script = ExtResource( 2 )
+

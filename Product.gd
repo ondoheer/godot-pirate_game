@@ -5,6 +5,8 @@ var product_name = "[product name]"
 var min_price = 3
 var max_price = 23
 
+var product_panel = null
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	randomize()
